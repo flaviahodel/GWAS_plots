@@ -98,7 +98,6 @@ chicago_plot <- function(df1, df2, threshold) {
     geom_hline(yintercept = c(0, -log10(threshold), log10(threshold)), linetype = c("solid", "dashed", "dashed")) + 
     theme_light() +
     theme(legend.position="none",
-          axis.text.x = element_text(size = rel(0.75)),
           plot.margin = margin(6,6,-2,6),
           panel.border = element_blank(),
           panel.grid.major = element_blank(),
