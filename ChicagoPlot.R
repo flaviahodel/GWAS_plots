@@ -1,7 +1,16 @@
+# Libs
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(ggthemes)
+library(ggrepel)
+
+
 chicago_plot <- function(df1, df2, threshold) {
   
   message(sprintf("%d SNPs from df1", nrow(df1)))
   
+  ### Load dataframe 1 ###
   plot_data_1 <- df1 %>%   
     # Compute chromosome size
     group_by(CHR) %>% 
@@ -17,6 +26,7 @@ chicago_plot <- function(df1, df2, threshold) {
   
   message(sprintf("%d SNPs from df2", nrow(df2)))
   
+  ### Load dataframe 1 ###
   plot_data_2 <- df2 %>%   
     # Compute chromosome size
     group_by(CHR) %>% 
@@ -30,20 +40,22 @@ chicago_plot <- function(df1, df2, threshold) {
     arrange(CHR, BP) %>%
     mutate( BPcum=as.numeric(BP+tot))
   
-  ### Log10
+  ### -log10 and +log10-transform P-values ###
   plot_data_1$P <- -log10(plot_data_1$P)
   plot_data_2$P <- log10(plot_data_2$P)
   
-  ### Top SNP
+  ### Genome-wide significant top SNPs per chromosome ###
   tmp_1 <- plot_data_1[plot_data_1$P > -log10(threshold), ]
-  lead_snp_df_1 <- tmp_1[order(tmp_1$P, decreasing = TRUE), ]
-  lead_snp_1 <- lead_snp_df_1[1,]
+  lead_snp_1 <- tmp_1 %>% 
+    group_by(CHR) %>% 
+    slice(which.max(P))
   
-  tmp_2 <- plot_data_2[plot_data_2$P < log10(threshold), ]
-  lead_snp_df_2 <- tmp_2[order(tmp_2$P, decreasing = FALSE), ]
-  lead_snp_2 <- lead_snp_df_2[1,]
+  tmp_2 <- plot_data_2[plot_data_2$P < +log10(threshold), ]
+  lead_snp_2 <- tmp_2 %>% 
+    group_by(CHR) %>% 
+    slice(which.min(P))
   
-  # Bind
+  ### Bind ###
   plot_data <- rbind(plot_data_1, plot_data_2)
   
   ### Generate x-axis ###
@@ -61,16 +73,6 @@ chicago_plot <- function(df1, df2, threshold) {
     scale_x_continuous(label = axisdf$CHR, breaks = axisdf$center, expand = c(0.03, 0.03)) + 
     # scale the x-axis
     scale_y_continuous(limits = c(-max(abs(plot_data$P)+2), max(abs(plot_data$P)+2)), expand = expansion(mult = 0, add = 0)) + 
-    # remove space between plot area and x axis
-    theme_light() +
-    theme(legend.position="none",
-          axis.text.x = element_text(size = rel(0.75)),
-          plot.margin = margin(6,6,-2,6),
-          panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_line(color = "black"),
-          panel.background  = element_blank()) + #ok until here
     # add x label
     xlab("Chromosome") + 
     # add y label
@@ -93,8 +95,17 @@ chicago_plot <- function(df1, df2, threshold) {
                      hjust = 1.5) +
     geom_point(data = lead_snp_1, color = "red", size = 2) + # Add highlighted points 
     geom_point(data = lead_snp_2, color = "red", size = 2) + # Add highlighted points 
-    geom_hline(yintercept = c(0, -log10(threshold), log10(threshold)), linetype = c("solid", "dashed", "dashed")
+    geom_hline(yintercept = c(0, -log10(threshold), log10(threshold)), linetype = c("solid", "dashed", "dashed")) + 
+    theme_light() +
+    theme(legend.position="none",
+          axis.text.x = element_text(size = rel(0.75)),
+          plot.margin = margin(6,6,-2,6),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(color = "black"),
+          panel.background  = element_blank())
   
-  # return the final plot
-  return(plot) 
-}
+  ### Return the final plot ###
+  return(plot)
+  }
