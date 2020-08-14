@@ -4,6 +4,7 @@ library(dplyr)
 library(magrittr)
 library(ggthemes)
 library(ggrepel)
+library(dplyr) # do not load plyr lib afterwards
 
 
 chicago_plot <- function(df1, df2, threshold) {
@@ -72,7 +73,7 @@ chicago_plot <- function(df1, df2, threshold) {
     # set a colour pattern 
     scale_x_continuous(label = axisdf$CHR, breaks = axisdf$center, expand = c(0.03, 0.03)) + 
     # scale the x-axis
-    scale_y_continuous(limits = c(-max(abs(plot_data$P)+2), max(abs(plot_data$P)+2)), expand = expansion(mult = 0, add = 0)) + 
+    scale_y_continuous(limits = c(-50,50), expand = expansion(mult = 0, add = 0)) + 
     # add x label
     xlab("Chromosome") + 
     # add y label
@@ -82,16 +83,16 @@ chicago_plot <- function(df1, df2, threshold) {
                      aes(label = SNP), 
                      size = 4,
                      nudge_y = 2,
-                     segment.size = 0.5,
-                     vjust = 2,
+                     segment.size = 0.4,
+                     vjust = -1.5,
                      hjust = 1.5) + 
     # add annotation value
     geom_label_repel(data = lead_snp_2, 
                      aes(label = SNP), 
                      size = 4,
                      nudge_y = 2,
-                     segment.size = 0.5,
-                     vjust = 2,
+                     segment.size = 0.4,
+                     vjust = 1.5,
                      hjust = 1.5) +
     geom_point(data = lead_snp_1, color = "red", size = 2) + # Add highlighted points 
     geom_point(data = lead_snp_2, color = "red", size = 2) + # Add highlighted points 
@@ -107,4 +108,4 @@ chicago_plot <- function(df1, df2, threshold) {
   
   ### Return the final plot ###
   return(plot)
-  }
+}
