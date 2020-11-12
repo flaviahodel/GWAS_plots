@@ -1,3 +1,6 @@
+## Files must contain columns: CHR, BP, SNP and P
+
+
 # Libs
 library(ggplot2)
 library(dplyr)
