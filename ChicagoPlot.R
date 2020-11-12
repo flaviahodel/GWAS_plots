@@ -6,7 +6,6 @@ library(ggthemes)
 library(ggrepel)
 library(dplyr) # do not load plyr lib afterwards
 
-
 chicago_plot <- function(df1, df2, threshold) {
   
   message(sprintf("%d SNPs from df1", nrow(df1)))
@@ -71,17 +70,17 @@ chicago_plot <- function(df1, df2, threshold) {
     # create scatterplot colored by chromosome
     scale_color_manual(values = rep(c("#4E79A7", "#A0CBE8"), 22)) + 
     # set a colour pattern 
-    scale_x_continuous(label = axisdf$CHR, breaks = axisdf$center, expand = c(0.03, 0.03)) + 
+    scale_x_continuous(label = axisdf$CHR[seq(1, length(axisdf$CHR), by = 2)], breaks = axisdf$center[seq(1, length(axisdf$center), by = 2)], expand = c(0.03, 0.03)) + 
     # scale the x-axis
     scale_y_continuous(limits = c(-50,50), expand = expansion(mult = 0, add = 0)) + 
     # add x label
     xlab("Chromosome") + 
     # add y label
-    ylab(expression(+log[10](italic(P))~'\t'~'\t'~'\t'~-log[10](italic(P)))) + 
+    ylab(expression(+log[10](italic(P))~'\t'~'\t'~'\t'~'\t'~'\t'~-log[10](italic(P)))) + 
     # add annotation value
     geom_label_repel(data = lead_snp_1, 
                      aes(label = SNP), 
-                     size = 4,
+                     size = 5,
                      nudge_y = 2,
                      segment.size = 0.4,
                      vjust = -1.5,
@@ -89,7 +88,7 @@ chicago_plot <- function(df1, df2, threshold) {
     # add annotation value
     geom_label_repel(data = lead_snp_2, 
                      aes(label = SNP), 
-                     size = 4,
+                     size = 5,
                      nudge_y = 2,
                      segment.size = 0.4,
                      vjust = 1.5,
@@ -104,8 +103,10 @@ chicago_plot <- function(df1, df2, threshold) {
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           axis.line = element_line(color = "black"),
-          panel.background  = element_blank())
+          panel.background  = element_blank(),
+          text = element_text(size = 14))
   
   ### Return the final plot ###
   return(plot)
 }
+
