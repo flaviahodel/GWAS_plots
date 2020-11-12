@@ -1,5 +1,5 @@
 ## Files must contain columns: CHR, BP, SNP and P
-
+## Usage: chicago_plot(SummStats1, SummStats2, threshold) 
 
 # Libs
 library(ggplot2)
