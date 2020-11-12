@@ -74,8 +74,8 @@ chicago_plot <- function(df1, df2, threshold) {
     scale_color_manual(values = rep(c("#4E79A7", "#A0CBE8"), 22)) + 
     # set a colour pattern 
     scale_x_continuous(label = axisdf$CHR[seq(1, length(axisdf$CHR), by = 2)], breaks = axisdf$center[seq(1, length(axisdf$center), by = 2)], expand = c(0.03, 0.03)) + 
-    # scale the x-axis
-    scale_y_continuous(limits = c(-50,50), expand = expansion(mult = 0, add = 0)) + 
+    # scale the x-axis (uncomment if needed)
+    # scale_y_continuous(limits = c(-50,50), expand = expansion(mult = 0, add = 0)) + 
     # add x label
     xlab("Chromosome") + 
     # add y label
